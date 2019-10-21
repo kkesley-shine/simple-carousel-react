@@ -1,9 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-
+import TagsInput from 'react-tagsinput'
+import AutosizeInput from 'react-input-autosize'
+import 'react-tagsinput/react-tagsinput.css'
 function App() {
   const carousel = useRef(null)
   const [canSwipeRight, setCanSwipeRight] = useState(true)
   const [canSwipeLeft, setCanSwipeLeft] = useState(false)
+  const [tags, setTags] = useState([])
 
   const checkCanSwipe = (offset = 0) => {
     setCanSwipeLeft(!!carousel.current && carousel.current.scrollLeft + offset > 0)
@@ -45,6 +48,18 @@ function App() {
         }} className="button">next</button>
       }
       
+      <TagsInput
+        className="input tags input-tags"
+        focusedClassName={null}
+        inputProps={{placeholder: 'Add a tag'}}
+        value={tags} onChange={setTags} 
+        renderTag={({ getTagDisplayValue, tag, onRemove, key}) => (
+            <span class="tag">
+              {getTagDisplayValue(tag)}
+            <button onClick={() => onRemove(key)} class="delete is-small"></button>
+          </span>
+        )}
+        />
     </div>
   );
 }
