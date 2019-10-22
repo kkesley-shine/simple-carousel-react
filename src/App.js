@@ -12,7 +12,7 @@ function App() {
         <div onClick={() => inputRef.current.focus()} className="input tags input-tags">
           {
             tags.map((tag, index) => (
-              <span style={{marginBottom: 0}} class="tag">
+              <span style={{marginBottom: 0}} class="tag is-medium">
                   {tag}
                 <button onClick={() => setTags([...tags.slice(0, index), ...tags.slice(index + 1)])} class="delete is-small"></button>
               </span>
@@ -24,7 +24,7 @@ function App() {
             value={input}
             size={Math.max(10, input.length)} 
             onChange={e => setInput(e.target.value)}
-            className="tag-input"
+            className="tag-input is-size-6"
             placeholder="Add a tag..."
             type="text"
             onKeyDown={e => { 
