@@ -22,4 +22,12 @@ code {
 
 .input-tags {
   height: auto;
+  min-height: 2.5em;
+}
+
+.tag-input {
+  border: none;
+  &:focus {
+    outline: none !important;
+  }
 }

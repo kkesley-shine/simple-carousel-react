@@ -1,65 +1,43 @@
 import React, { useRef, useState, useEffect } from 'react';
 import TagsInput from 'react-tagsinput'
-import AutosizeInput from 'react-input-autosize'
 import 'react-tagsinput/react-tagsinput.css'
 function App() {
-  const carousel = useRef(null)
-  const [canSwipeRight, setCanSwipeRight] = useState(true)
-  const [canSwipeLeft, setCanSwipeLeft] = useState(false)
   const [tags, setTags] = useState([])
+  const [input, setInput] = useState('')
+  const inputRef = useRef(null)
 
-  const checkCanSwipe = (offset = 0) => {
-    setCanSwipeLeft(!!carousel.current && carousel.current.scrollLeft + offset > 0)
-    setCanSwipeRight(!!carousel.current && carousel.current.scrollLeft + offset < carousel.current.scrollWidth - carousel.current.offsetWidth)
-  }
-
-  useEffect(() => {
-    checkCanSwipe()
-  }, [carousel])
-
-  
-
-  const swipe = (offset) => {
-    checkCanSwipe(offset)
-    carousel.current.scrollLeft += offset
-  }
-
-  const items = (new Array(100)).fill(null)
   return (
     <div className="App" style={{paddingLeft: 50, paddingRight: 50}}>
-      {
-        canSwipeLeft &&
-        <button onClick={() => {
-          swipe(-carousel.current.offsetWidth)
-        }} className="button">prev</button>
-      }
-      <div ref={carousel} className="columns is-mobile carousel" style={{marginTop: 30, scrollBehavior: 'smooth', overflowX: 'auto',}}>
-        {
-          items.map((_, idx) => (
-            <div key={idx} style={{border: '1px solid black', marginLeft: 5, marginRight: 5, borderRadius: 30}} className="column is-narrow">somebody {idx}</div>
-          ))
-        }
-      </div>
-      {
-        canSwipeRight && 
-        <button onClick={() => {
-          console.log(carousel.current.offsetWidth)
-          swipe(carousel.current.offsetWidth)
-        }} className="button">next</button>
-      }
-      
-      <TagsInput
-        className="input tags input-tags"
-        focusedClassName={null}
-        inputProps={{placeholder: 'Add a tag'}}
-        value={tags} onChange={setTags} 
-        renderTag={({ getTagDisplayValue, tag, onRemove, key}) => (
-            <span class="tag">
-              {getTagDisplayValue(tag)}
-            <button onClick={() => onRemove(key)} class="delete is-small"></button>
-          </span>
-        )}
-        />
+
+        <div onClick={() => inputRef.current.focus()} className="input tags input-tags">
+          {
+            tags.map((tag, index) => (
+              <span style={{marginBottom: 0}} class="tag">
+                  {tag}
+                <button onClick={() => setTags([...tags.slice(0, index), ...tags.slice(index + 1)])} class="delete is-small"></button>
+              </span>
+            ))
+          }
+          <input
+            tabIndex="0"
+            ref={inputRef}
+            value={input}
+            size={Math.max(10, input.length)} 
+            onChange={e => setInput(e.target.value)}
+            className="tag-input"
+            placeholder="Add a tag..."
+            type="text"
+            onKeyDown={e => { 
+              if((e.key === 'Tab' || e.key === 'Enter') && input.length > 0) {
+                setTags([...tags, input])
+                setInput('')
+                e.preventDefault()
+              } else if (input.length === 0 && e.key === 'Backspace') {
+                setTags([...tags.slice(0, tags.length - 1), ...tags.slice(tags.length - 1 + 1)])
+              }
+            }}
+            />
+        </div>
     </div>
   );
 }
