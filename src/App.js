@@ -1,11 +1,22 @@
-import React, { useRef, useState, useEffect } from 'react';
-import TagsInput from 'react-tagsinput'
-import 'react-tagsinput/react-tagsinput.css'
+import React, { useRef, useState, useEffect } from 'react'
+import partition from 'lodash.partition'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import {LexoRank} from 'lexorank'
 function App() {
   const [tags, setTags] = useState([])
   const [input, setInput] = useState('')
   const inputRef = useRef(null)
+  const items1 = (new Array(100)).fill(null).map((_, idx) => ({ key: `1-${idx}`}))
+  const items2 = (new Array(100)).fill(null).map((_, idx) => ({ key: `2-${idx}`}))
+  const items3 = (new Array(100)).fill(null).map((_, idx) => ({ key: `3-${idx}`}))
+  const items = (new Array(100)).fill(null).reduce((partitions, obj, index) => ({...partitions, [index % 3]: [...partitions[index % 3] || [], obj]}),{})
+  console.log(items)
+  let a = LexoRank.middle()
 
+  new Array(100000).fill(null).forEach(() => {
+    a = a.between(a.genNext())
+  })
+  console.log(a)
   return (
     <div className="App" style={{paddingLeft: 50, paddingRight: 50}}>
 
@@ -38,6 +49,109 @@ function App() {
             }}
             />
         </div>
+        <DragDropContext onDragEnd={r => console.log(r)}>
+        <div className="container">
+          <div className="columns is-multiline">
+            <div className="column">
+              <Droppable droppableId="droppable-3">
+              {
+              (provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {
+                    items1.map((item, idx) => (
+                      <Draggable key={item.key} draggableId={item.key} index={idx}>
+                        {(provided, snapshot) => (
+                        <div className="card"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={provided.draggableProps.style}
+                        >
+                          <div className="card-body">
+                            <p>{item.key}</p>
+                          </div>
+                        </div>
+                      )}
+                      </Draggable>
+                    ))
+                  }
+                </div>
+              )
+                
+              }
+              </Droppable>
+              
+            </div>
+            <div className="column">
+            <Droppable droppableId="droppable-1">
+            {
+              (provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {
+                    items2.map((item, idx) => (
+                      <Draggable key={item.key} draggableId={item.key} index={idx}>
+                        {(provided, snapshot) => (
+                        <div className="card"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={provided.draggableProps.style}
+                        >
+                          <div className="card-body">
+                            <p>{item.key}</p>
+                          </div>
+                        </div>
+                      )}
+                      </Draggable>
+                    ))
+                  }
+                </div>
+              )
+                
+              }
+            </Droppable>
+            </div>
+            <div className="column">
+            <Droppable droppableId="droppable-2">
+            {
+              (provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {
+                    items3.map((item, idx) => (
+                      <Draggable key={item.key} draggableId={item.key} index={idx}>
+                        {(provided, snapshot) => (
+                        <div className="card"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={provided.draggableProps.style}
+                        >
+                          <div className="card-body">
+                            <p>{item.key}</p>
+                          </div>
+                        </div>
+                      )}
+                      </Draggable>
+                    ))
+                  }
+                </div>
+              )
+                
+              }
+            </Droppable>
+            </div>
+          </div>
+        </div>
+        </DragDropContext>
     </div>
   );
 }
